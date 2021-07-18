@@ -45,29 +45,15 @@ fi
 cd "$CURRENT_DIR"
 
 # Symlink VS Code settings to the present `settings.json` file
-# If it's a macOS
-if [[ `uname` =~ "Darwin" ]]; then
-  CODE_PATH=~/Library/Application\ Support/Code/User
-# Else, it's a Linux
-else
-  CODE_PATH=~/.config/Code/User
-  # If this folder doesn't exist, it's a WSL
-  if [ ! -e $CODE_PATH ]; then
-    CODE_PATH=~/.vscode-server/data/Machine
-  fi
+CODE_PATH=~/.config/Code/User
+# If this folder doesn't exist, it's a WSL
+if [ ! -e $CODE_PATH ]; then
+  CODE_PATH=~/.vscode-server/data/Machine
 fi
+
 target="$CODE_PATH/settings.json"
 backup $target
 symlink $PWD/settings.json $target
-
-# Symlink SSH config file to the present `config` file for macOS and add SSH
-# passphrase to the keychain
-if [[ `uname` =~ "Darwin" ]]; then
-  target=~/.ssh/config
-  backup $target
-  symlink $PWD/config $target
-  ssh-add -K ~/.ssh/id_ed25519
-fi
 
 # Refresh the current terminal with the newly installed configuration
 zsh ~/.zshrc
